@@ -1,0 +1,54 @@
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+# original backend without dynamic versioning: build-backend = "poetry.core.masonry.api"
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry]
+name = "mlst_aligner"
+# placeholder version
+version = "0.0.0"
+description = ""
+authors = ["Jonathan Kirkland <jokirkland@ucsd.edu>", "Daira Melendez <damelendez@ucsd.edu>"]
+readme = "README.md"
+packages = [{include = "mlst_aligner"}]
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report html --cov-report term-missing --cov-fail-under 95"
+pythonpath = [
+  ".", "mlst_aligner"
+]
+
+[tool.coverage.run]
+source = ["mlst_aligner"]
+
+[tool.yapf]
+blank_line_before_nested_class_or_def = true
+column_limit = 127
+
+[tool.pylint]
+max-line-length = 127
+disable = [
+    "E1101" # Used when a variable is accessed for a nonexistent member. 
+]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+poetry-dynamic-versioning = {extras = ["plugin"], version = "^0.21.1"}
+python-dotenv = "^0.21.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+pytest-cov = "^4.0.0"
+pytest-mock = "^3.10.0"
+pylint = "^2.17.2"
+toml = "^0.10.2"
+yapf = "^0.32.0"
+
+
+
