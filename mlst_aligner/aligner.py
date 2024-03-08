@@ -1,7 +1,9 @@
 """aligner.py"""
 from typing import Tuple, Dict
 
-def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty: int, s: str, t: str) -> Tuple[int, str, str, Dict[int, Tuple[int, int]]]:
+
+def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty: int, s: str,
+                         t: str) -> Tuple[int, str, str, Dict[int, Tuple[int, int]]]:
     """
     Perform local sequence alignment between two strings using dynamic programming.
 
@@ -77,12 +79,9 @@ def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty
 
     return max_score, aligned_s, aligned_t, scores_at_positions
 
+
 if __name__ == "__main__":
-    tests = [
-        (3, 3, 1, "AGC", "ATC"),
-        (1, 1, 1, "TAACG", "ACGTG"),
-        (3, 2, 1, "CAGAGATGGCCG", "ACG"),
-        (2, 3, 1, "CTT", "AGCATAAAGCATT")
-    ]
+    tests = [(3, 3, 1, "AGC", "ATC"), (1, 1, 1, "TAACG", "ACGTG"), (3, 2, 1, "CAGAGATGGCCG", "ACG"),
+             (2, 3, 1, "CTT", "AGCATAAAGCATT")]
     for test in tests:
         print(positional_alignment(*test))
