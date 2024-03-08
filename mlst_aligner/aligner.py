@@ -77,4 +77,3 @@ def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty
             scores_at_positions[pos] = (dp[len(s)][pos], alignment_length)
 
     return max_score, aligned_s, aligned_t, scores_at_positions
-
