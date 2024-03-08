@@ -3,7 +3,7 @@
 import pytest
 import os
 from pysam import FastaFile
-from mlst_aligner.utils import read_fasta  # Adjust import path as necessary
+from mlst_aligner.utils import read_fasta, weighted_average
 
 
 def create_temp_fasta_file(tmp_path, content=">seq1\nATCG"):
@@ -38,3 +38,18 @@ def test_read_fasta_invalid_extension(tmp_path):
     file_path.touch()  # Create an empty file with invalid extension
     with pytest.raises(ValueError):
         read_fasta(str(file_path))
+        
+@pytest.mark.parametrize("scores, expected_average", [
+    # Typical case
+    ([(10, 2), (20, 3), (30, 5)], (10*2 + 20*3 + 30*5) / (2 + 3 + 5)),
+    # Equal weights (simple average)
+    ([(1, 1), (2, 1), (3, 1)], (1 + 2 + 3) / 3),
+    # Varying weights
+    ([(100, 1), (200, 2), (300, 3)], (100*1 + 200*2 + 300*3) / (1 + 2 + 3)),
+    # Empty list
+    ([], 0),
+    # This test case is commented out because normally weights should be positive.
+    # ([(1, -1), (2, 1)], 0),
+])
+def test_weighted_average(scores, expected_average):
+    assert weighted_average(scores) == pytest.approx(expected_average), "The weighted average does not match the expected value."
