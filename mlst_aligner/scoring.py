@@ -32,11 +32,6 @@ def merge_scores(scores_at_positions_list: List[Dict[int, int]]) -> Dict[int, Li
     return merged_scores
 
 
-def align_read(args):
-    read_name, read_sequence, scoring_parameters, reference = args
-    return positional_alignment(*scoring_parameters, s=read_sequence, t=reference)
-
-
 class GeneScore:
     """docstring to come soonTM
     """
@@ -47,7 +42,7 @@ class GeneScore:
         self.reference = reference
         self.scoring_parameters = (kwargs.get("match", 2), kwargs.get("mismatch", -2), kwargs.get("indel", -1))
         self.scoring_dict = None
-
+        
     def get_scores(self):
         """
         Fetches each read from the FASTA file, performs local sequence alignment against a reference sequence,
@@ -77,8 +72,8 @@ class GeneScore:
 
         self.scoring_dict = merge_scores(score_dicts)
         end_time = time.time()
-        print(f"Completed in {end_time - start_time:.2f} seconds.")
-
+        print(f"Completed in {end_time - start_time:.2f} seconds.")          
+    
     def get_t_score(self) -> int:
         """
         Calculates the total score from the aggregated scoring dictionary.
@@ -91,12 +86,12 @@ class GeneScore:
         Returns:
             int: The total score representing the sum of all alignment scores across all positions and reads.
         """
-        if self.scoring_dict is not None:
+        if self.get_scores is not None:
             try:
                 self.get_scores()
             except Exception as e:
                 print(f"Error encountered in get_scores: {e}")
-                return 0
+                return 0 
         final_score = 0
         for value in self.scoring_dict.values():
             final_score += weighted_average(value)
