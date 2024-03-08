@@ -72,7 +72,6 @@ def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty
         else:
             break
 
-    # Update scores_at_positions with score and final alignment length
     for pos in range(1, len(t) + 1):
         if dp[len(s)][pos] > 0:  # Checks if there is a score at the end of s for each position in t
             scores_at_positions[pos] = (dp[len(s)][pos], alignment_length)

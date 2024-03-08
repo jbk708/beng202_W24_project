@@ -30,11 +30,9 @@ from mlst_aligner.aligner import positional_alignment
     ])
 def test_positional_alignment(match_reward, mismatch_penalty, indel_penalty, s, t, expected_score, expected_aligned_s,
                               expected_aligned_t, expected_position_score):
-    # Run the alignment
     score, aligned_s, aligned_t, scores_at_positions = positional_alignment(match_reward, mismatch_penalty, indel_penalty, s,
                                                                             t)
 
-    # Assert that the returned score and alignments are as expected
     assert score == expected_score
     assert aligned_s == expected_aligned_s
     assert aligned_t == expected_aligned_t
