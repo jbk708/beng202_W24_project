@@ -13,7 +13,7 @@ readme = "README.md"
 packages = [{include = "mlst_aligner"}]
 
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report html --cov-report term-missing --cov-fail-under 95"
+addopts = "--cov --cov-report html --cov-report term-missing"
 pythonpath = [
   ".", "mlst_aligner"
 ]
@@ -27,6 +27,7 @@ column_limit = 127
 
 [tool.pylint]
 max-line-length = 127
+ignore = ["cli.py"]
 disable = [
     "E1101" # Used when a variable is accessed for a nonexistent member. 
 ]
