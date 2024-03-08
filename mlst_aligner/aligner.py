@@ -1,8 +1,10 @@
 """aligner.py"""
 from typing import Tuple, Dict
 
-def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty: int, s: str, t: str) -> Tuple[int, str, str, Dict[int, int]]:
-      """
+
+def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty: int, s: str,
+                         t: str) -> Tuple[int, str, str, Dict[int, int]]:
+    """
     Perform local sequence alignment between two strings using dynamic programming.
 
     This function computes the local alignment between string s (source) and t (target) based on the given scoring parameters. It returns the highest alignment score, the corresponding local alignment for s and t, and a dictionary containing the scores at each position in the target string where an actual alignment (match/mismatch) occurred.
