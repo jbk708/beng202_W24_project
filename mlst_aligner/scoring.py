@@ -46,7 +46,7 @@ class GeneScore:
     def get_scores(self):
         """
         Fetches each read from the FASTA file, performs local sequence alignment against a reference sequence,
-        and merges the scores at each position into a single dictionary using multithreading to speed up the process.
+        and merges the scores at each position into a single dictionary.
 
         This method iterates over each read in the FASTA file specified by the read file path provided during
         object initialization. It performs local sequence alignment of each read against the reference sequence
@@ -60,35 +60,20 @@ class GeneScore:
                                             alignments. This dictionary provides a comprehensive overview of how
                                             each position in the reference sequence aligns with the reads.
         """
-        start_time = time.time()  # Start timing
-
-        # Define a function to process each read
-        def process_read(read_name):
-            read_sequence = self.reads.fetch(read_name)
-            _, _, _, scores_at_positions = positional_alignment(
-                *self.scoring_parameters, s=read_sequence, t=self.reference)
-            return scores_at_positions
-
-        # Initialize an empty list to store the future results
+        start_time = time.time()
         score_dicts = []
 
-        # Use ThreadPoolExecutor to parallelize read processing
-        with ThreadPoolExecutor() as executor:
-            # Submit all read processing tasks and get a list of futures
-            futures = {executor.submit(process_read, read_name): read_name for read_name in self.reads.references}
-
-            # Iterate over the futures as they complete and update score_dicts
-            for future in tqdm(as_completed(futures), total=len(futures), desc="Aligning reads"):
-                try:
-                    score_dicts.append(future.result())
-                except Exception as e:
-                    print(f"Read processing failed: {e}")
+        # Use tqdm to show progress bar
+        for read_name in tqdm(self.reads.references, desc="Aligning reads"):
+            read_sequence = self.reads.fetch(read_name)
+            alignment_score, aligned_read, aligned_reference, scores_at_positions = positional_alignment(
+                *self.scoring_parameters, s=read_sequence, t=self.reference)
+            score_dicts.append(scores_at_positions)
 
         self.scoring_dict = merge_scores(score_dicts)
-        end_time = time.time()  # End timing
-        
-        print(f"Completed in {end_time - start_time:.2f} seconds.")
-            
+        end_time = time.time()
+        print(f"Completed in {end_time - start_time:.2f} seconds.")          
+    
     def get_t_score(self) -> int:
         """
         Calculates the total score from the aggregated scoring dictionary.
