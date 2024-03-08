@@ -1,5 +1,6 @@
 """utils.py"""
 import os
+import random
 from typing import List, Tuple, Union
 from pysam import FastaFile
 
@@ -75,22 +76,28 @@ def weighted_average(scores: List[Tuple[int, int]]) -> float:
     return total_product_sum / total_weight_sum if total_weight_sum else 0
 
 
-def subset_fasta(original_fasta: str, subset_count: 1000, output_fasta: str):
+def subset_fasta(original_fasta: str, subset_count: 1000, output_fasta: str, randomize: bool = False):
     """
     Subsets a FASTA file and saves the subset to a new file.
 
     Parameters:
-    - original_fasta: str, path to the original FASTA file.
-    - subset_count: int, number of reads to include in the subset.
-    - output_fasta: str, path where the subset FASTA file will be saved.
+    - original_fasta (str): Path to the original FASTA file.
+    - subset_count (int): Number of reads to include in the subset.
+    - output_fasta (str): Path where the subset FASTA file will be saved.
+    - randomize (bool): If True, randomize the subset. Default is False.
 
-    The function reads the original FASTA file, extracts the specified number of reads,
-    and writes them to the output FASTA file.
+    The function reads the original FASTA file, optionally randomizes the order of reads,
+    extracts the specified number of reads, and writes them to the output FASTA file.
     """
     with FastaFile(original_fasta) as fasta:
+        references = fasta.references
+        if randomize:
+            # Randomly shuffle the references list if randomize is True
+            random.shuffle(references)
+        
         with open(output_fasta, 'w') as outfile:
-            for i in range(min(subset_count, len(fasta.references))):
-                sequence = fasta.fetch(fasta.references[i])
-                outfile.write(f">{fasta.references[i]}\n{sequence}\n")
+            for i in range(min(subset_count, len(references))):
+                sequence = fasta.fetch(references[i])
+                outfile.write(f">{references[i]}\n{sequence}\n")
 
     print(f"Subset FASTA file saved to {output_fasta} with {subset_count} reads.")

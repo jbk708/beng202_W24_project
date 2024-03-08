@@ -32,16 +32,21 @@ def score(read_fp, reference, match, mismatch, indel):
 @click.command()
 @click.argument('original_fasta_fp', type=click.Path(exists=True))
 @click.option('--subset_count', default=1000, help='Number of reads to include in the subset.', type=int)
+@click.option('--randomize', is_flag=True, help='Randomize the subset selection.', default=False)
 @click.argument('output_fasta_fp', type=click.Path())
-def subset(original_fasta_fp, subset_count, output_fasta_fp):
+def subset(original_fasta_fp, subset_count, output_fasta_fp, randomize):
     """
-    Subsets a FASTA file and saves the subset to a new file.
+    Subsets a FASTA file and saves the subset to a new file. Optionally randomizes the subset selection.
     
     ORIGINAL_FASTA_FP: Path to the original FASTA file.
-    
     OUTPUT_FASTA_FP: Path where the subset FASTA file will be saved.
+    
+    Options:
+    --subset_count: Specify the number of reads to include in the subset. Default is 1000.
+    --randomize: If set, the reads selection for the subset will be randomized.
     """
-    subset_fasta(original_fasta=original_fasta_fp, subset_count=subset_count, output_fasta=output_fasta_fp)
+    subset_fasta(original_fasta=original_fasta_fp, subset_count=subset_count, output_fasta=output_fasta_fp, randomize=randomize)
+
 
 
 @click.command()
