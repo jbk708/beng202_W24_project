@@ -24,7 +24,7 @@ All dependencies will be installed automatically when using Poetry to install th
 3. run `poetry install`
 4. Run your module of choice with `poetry run {module}`
 
-## Using the CLI for GeneScore
+## Using the CLI for MLST Score
 
 The CLI provides a simple and interactive way to compute gene scores based on local sequence alignment. Here's how to use it:
 
