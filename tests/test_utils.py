@@ -3,8 +3,8 @@
 import pytest
 import os
 from pysam import FastaFile
-from mlst_aligner.utils import read_fasta, weighted_average
-
+from mlst_aligner.utils import read_fasta, weighted_average, subset_fasta
+from unittest.mock import patch, mock_open
 
 def create_temp_fasta_file(tmp_path, content=">seq1\nATCG"):
     """
@@ -60,3 +60,23 @@ def test_read_fasta_invalid_extension(tmp_path):
 def test_weighted_average(scores, expected_average):
     assert weighted_average(scores) == pytest.approx(
         expected_average), "The weighted average does not match the expected value."
+
+def test_subset_fasta_creates_output_file(tmp_path):
+    """
+    Test that the subset_fasta function creates an output file at the specified location.
+    """
+    original_fasta = "path/to/original/test_data.fasta"
+    output_fasta = tmp_path / "output.fasta"
+    subset_count = 5
+
+    # Mock open to simulate reading and writing files
+    with patch("builtins.open", mock_open(read_data=">seq1\nATGC\n>seq2\nATGG\n")) as mocked_file:
+        # Assuming FastaFile is a custom class you're using to read FASTA files
+        with patch("mlst_aligner.utils.FastaFile") as MockFastaFile:
+            mock_fasta_file = MockFastaFile.return_value
+            mock_fasta_file.references = ['seq1', 'seq2']
+            mock_fasta_file.fetch.side_effect = ['ATGC', 'ATGG']
+            
+            subset_fasta(original_fasta, subset_count, str(output_fasta))
+            mocked_file.assert_called_with(str(output_fasta), 'w')  # Check if the output file was attempted to be opened for writing
+    
