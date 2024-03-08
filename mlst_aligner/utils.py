@@ -47,7 +47,32 @@ def weighted_average(scores: List[Tuple[int, int]]) -> float:
 
     return total_product_sum / total_weight_sum if total_weight_sum else 0
 
+def subset_fasta(original_fasta: str, subset_count: 1000, output_fasta: str):
+    """
+    Subsets a FASTA file and saves the subset to a new file.
+
+    Parameters:
+    - original_fasta: str, path to the original FASTA file.
+    - subset_count: int, number of reads to include in the subset.
+    - output_fasta: str, path where the subset FASTA file will be saved.
+
+    The function reads the original FASTA file, extracts the specified number of reads,
+    and writes them to the output FASTA file.
+    """
+    # Open the original FASTA file for reading
+    with FastaFile(original_fasta) as fasta:
+        # Open the output file for writing
+        with open(output_fasta, 'w') as outfile:
+            # Iterate over the first subset_count references in the original FASTA
+            for i in range(min(subset_count, len(fasta.references))):
+                # Fetch the sequence for the current reference
+                sequence = fasta.fetch(fasta.references[i])
+                # Write the sequence to the output file in FASTA format
+                outfile.write(f">{fasta.references[i]}\n{sequence}\n")
+
+    print(f"Subset FASTA file saved to {output_fasta} with {subset_count} reads.")
 
 def save_results(results, file_path):
     # Function to save the computed results to a file.
     pass
+

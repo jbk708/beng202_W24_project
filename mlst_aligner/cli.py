@@ -1,10 +1,10 @@
-"""cli.py"""
 import click
 from mlst_aligner.scoring import GeneScore
+from mlst_aligner.utils import subset_fasta
 
 @click.group()
 def cli():
-    """GeneScore CLI"""
+    """MLST Aligner CLI."""
     pass
 
 @click.command()
@@ -22,7 +22,21 @@ def score(read_fp, reference, match, mismatch, indel):
     final_score = gene_score.get_t_score()
     click.echo(f"Final Score: {final_score}")
 
+@click.command()
+@click.argument('original_fasta_fp', type=click.Path(exists=True))
+@click.option('--subset_count', default=1000, help='Number of reads to include in the subset.', type=int)
+@click.argument('output_fasta_fp', type=click.Path())
+def subset(original_fasta_fp, subset_count, output_fasta_fp):
+    """
+    Subsets a FASTA file and saves the subset to a new file.
+    
+    ORIGINAL_FASTA_FP: Path to the original FASTA file.
+    
+    OUTPUT_FASTA_FP: Path where the subset FASTA file will be saved.
+    """
+    subset_fasta(original_fasta=original_fasta_fp, subset_count=subset_count, output_fasta=output_fasta_fp)
 cli.add_command(score)
+cli.add_command(subset)
 
 if __name__ == '__main__':
     cli()
