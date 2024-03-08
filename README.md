@@ -1,3 +1,5 @@
+# Positional Aligner for MLST Based Strain Classification
+
 ## Installation:
 
 1. Clone git repo into directory of choice
