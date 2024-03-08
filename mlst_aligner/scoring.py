@@ -86,13 +86,14 @@ class GeneScore:
         Returns:
             int: The total score representing the sum of all alignment scores across all positions and reads.
         """
-        try:
-            self.get_scores()
-        except Exception as e:
-            print(f"Error encountered in get_scores: {e}")
-            return 0 
+        if self.scoring_dict is not None:
+            try:
+                self.get_scores()
+            except Exception as e:
+                print(f"Error encountered in get_scores: {e}")
+                return 0 
         final_score = 0
         for value in self.scoring_dict.values():
             final_score += weighted_average(value)
-            
+        final_score = final_score // len(self.scoring_dict.values())
         return final_score
