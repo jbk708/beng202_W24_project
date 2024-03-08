@@ -2,7 +2,7 @@
 from typing import Tuple, Dict
 
 
-def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty: int, s: str,
+def positional_alignment(match_reward: 2, mismatch_penalty: -2, indel_penalty: 1, s: str,
                          t: str) -> Tuple[int, str, str, Dict[int, int]]:
     """
     Perform local sequence alignment between two strings using dynamic programming.
@@ -73,8 +73,3 @@ def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty
             break
 
     return max_score, aligned_s, aligned_t, scores_at_positions
-
-
-def align_reads(reads, target, scoring_params):
-    # Wrapper function that uses local_alignment for each read.
-    pass
