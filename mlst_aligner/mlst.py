@@ -12,7 +12,6 @@ class ScoreMLST(GeneScore):
         gene_scores = []
         for gene_name, sequence in self.references:
             self.reference = sequence  
-            super().get_scores() 
             gene_score = self.get_t_score()
             gene_scores.append((gene_name, gene_score))
             
