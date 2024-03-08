@@ -48,8 +48,8 @@ def subset(original_fasta_fp, subset_count, output_fasta_fp):
 @click.argument('reads_fp', type=click.Path(exists=True))
 @click.argument('mlst_fp', type=click.Path(exists=True))
 @click.option('--match', default=2, help='Match score.')
-@click.option('--mismatch', default=-2, help='Mismatch penalty.')
-@click.option('--indel', default=-1, help='Indel penalty.')
+@click.option('--mismatch', default=-4, help='Mismatch penalty.')
+@click.option('--indel', default=-2, help='Indel penalty.')
 def score_mlst(reads_fp, mlst_fp, match, mismatch, indel):
     """
     Compute and print the MLST scores for multiple genes based on alignments.
