@@ -30,14 +30,33 @@ def merge_scores(scores_at_positions_list: List[Dict[int, int]]) -> Dict[int, Li
 
 
 class GeneScore:
+    """docstring to come soonTM
+    """
 
     def __init__(self, read_fp: str, reference: str, **kwargs):
+        """GeneScore Initialization"""
         self.reads = read_fasta(read_fp)
         self.reference = reference
         self.scoring_parameters = (kwargs.get("match", 2), kwargs.get("mismatch", -2), kwargs.get("indel", -1))
         self.scores = None
 
     def get_scores(self):
+        """
+        Fetches each read from the FASTA file, performs local sequence alignment against a reference sequence,
+        and merges the scores at each position into a single dictionary.
+
+        This method iterates over each read in the FASTA file specified by the read file path provided during
+        object initialization. It performs local sequence alignment of each read against the reference sequence
+        using the scoring parameters. The scores at each position from these alignments are then aggregated across 
+        all reads to generate ascoring dictionary for the aligned segments of the reference. The resulting merged 
+        scores dictionary combines all scores on the position to which they were aligned.
+
+        Attributes:
+            scores (Dict[int, List[int]]): A dictionary where each key is a position in the reference sequence,
+                                        and each value is a list of scores for that position from all reads'
+                                        alignments. This dictionary provides a comprehensive overview of how
+                                        each position in the reference sequence aligns with the reads.
+        """
         score_dicts = []
         for read_name in self.reads.references:
             read_sequence = self.reads.fetch(read_name)
