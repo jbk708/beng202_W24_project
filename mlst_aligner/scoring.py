@@ -100,5 +100,5 @@ class GeneScore:
         final_score = 0
         for value in self.scoring_dict.values():
             final_score += weighted_average(value)
-        final_score = final_score // len(self.scoring_dict.values())
+        final_score = final_score // len(self.reference)
         return final_score
