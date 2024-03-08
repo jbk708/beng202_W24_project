@@ -28,6 +28,7 @@ def score(read_fp, reference, match, mismatch, indel):
     end_time = time.time()
     print(f"Completed in {end_time - start_time:.2f} seconds.")
 
+
 @click.command()
 @click.argument('original_fasta_fp', type=click.Path(exists=True))
 @click.option('--subset_count', default=1000, help='Number of reads to include in the subset.', type=int)
@@ -41,6 +42,7 @@ def subset(original_fasta_fp, subset_count, output_fasta_fp):
     OUTPUT_FASTA_FP: Path where the subset FASTA file will be saved.
     """
     subset_fasta(original_fasta=original_fasta_fp, subset_count=subset_count, output_fasta=output_fasta_fp)
+
 
 @click.command()
 @click.argument('reads_fp', type=click.Path(exists=True))
@@ -59,9 +61,11 @@ def score_mlst(reads_fp, mlst_fp, match, mismatch, indel):
         click.echo(f"Gene: {gene_name}, Score: {gene_score}")
     end_time = time.time()
     print(f"Completed in {end_time - start_time:.2f} seconds.")
+
+
 cli.add_command(score)
 cli.add_command(subset)
 cli.add_command(score_mlst)
 if __name__ == '__main__':
-    
+
     cli()

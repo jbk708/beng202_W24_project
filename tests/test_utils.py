@@ -83,30 +83,36 @@ def test_subset_fasta_creates_output_file(tmp_path):
             mocked_file.assert_called_with(str(output_fasta),
                                            'w')  # Check if the output file was attempted to be opened for writing
 
+
 @pytest.fixture
 def mock_fasta_file(mocker):
     # Mock the FastaFile object
     mock_fasta = MagicMock()
     mock_fasta.references = ['gene1', 'gene2']
-    mock_fasta.fetch.side_effect = ['ATGC'*5, 'CGTA'*5]  # Mocked sequences
+    mock_fasta.fetch.side_effect = ['ATGC' * 5, 'CGTA' * 5]  # Mocked sequences
     return mock_fasta
+
 
 @pytest.fixture
 def mock_read_fasta(mocker, mock_fasta_file):
     # Mock the read_fasta function to return the mock FastaFile object
     mocker.patch('mlst_aligner.utils.read_fasta', return_value=mock_fasta_file)
 
+
 def test_fetch_references_with_valid_file(mock_read_fasta):
     # Test with a mocked valid FASTA file
     file_path = 'valid.fasta'
-    expected = [('gene1', 'ATGC'*5), ('gene2', 'CGTA'*5)]
-    assert fetch_references(file_path) == expected, "fetch_references should return the correct list of gene names and sequences."
+    expected = [('gene1', 'ATGC' * 5), ('gene2', 'CGTA' * 5)]
+    assert fetch_references(
+        file_path) == expected, "fetch_references should return the correct list of gene names and sequences."
+
 
 def test_fetch_references_with_nonexistent_file(mocker):
     # Test with a nonexistent FASTA file (mocking read_fasta to raise FileNotFoundError)
     mocker.patch('mlst_aligner.utils.read_fasta', side_effect=FileNotFoundError("File does not exist."))
     file_path = 'nonexistent.fasta'
     assert fetch_references(file_path) == [], "fetch_references should return an empty list for nonexistent files."
+
 
 def test_fetch_references_with_invalid_extension(mocker):
     # Test with an invalid file extension (mocking read_fasta to raise ValueError)

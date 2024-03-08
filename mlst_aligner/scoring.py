@@ -32,6 +32,11 @@ def merge_scores(scores_at_positions_list: List[Dict[int, int]]) -> Dict[int, Li
     return merged_scores
 
 
+def align_read(args):
+    read_name, read_sequence, scoring_parameters, reference = args
+    return positional_alignment(*scoring_parameters, s=read_sequence, t=reference)
+
+
 class GeneScore:
     """docstring to come soonTM
     """
