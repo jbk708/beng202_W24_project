@@ -1,15 +1,14 @@
 """aligner.py"""
 from typing import Tuple, Dict
 
-
-def positional_alignment(match_reward: 2, mismatch_penalty: -2, indel_penalty: 1, s: str,
-                         t: str) -> Tuple[int, str, str, Dict[int, int]]:
+def positional_alignment(match_reward: int, mismatch_penalty: int, indel_penalty: int, s: str, t: str) -> Tuple[int, str, str, Dict[int, Tuple[int, int]]]:
     """
     Perform local sequence alignment between two strings using dynamic programming.
 
     This function computes the local alignment between string s (source) and t (target) based on the given scoring parameters. 
     It returns the highest alignment score, the corresponding local alignment for s and t, 
-    and a dictionary containing the scores at each position in the target string where an actual alignment (match/mismatch) occurred.
+    and a dictionary containing the scores at each position in the target string where an actual alignment (match/mismatch) occurred, 
+    along with the final length of the aligned target string as a tuple (score, final_length_of_aligned_t).
 
     Args:
         match_reward (int): The score to reward when characters match.
@@ -22,11 +21,7 @@ def positional_alignment(match_reward: 2, mismatch_penalty: -2, indel_penalty: 1
         max_score (int): The highest score achieved in the alignment.
         aligned_s (str): The aligned version of the source string with gaps ('-') as necessary.
         aligned_t (str): The aligned version of the target string with gaps ('-') as necessary.
-        scores_at_positions (Dict[int, int]): A dictionary mapping each position in the target string where an actual alignment occurred to the score achieved at that position.
-
-    Examples:
-        >>> local_alignment_w_scores(1, -1, -1, 'GATTACA', 'GCATGCU')
-        (3, 'GATTA', 'GAT--', {1: 0, 2: 1, 3: 2, 5: 3})
+        scores_at_positions (Dict[int, Tuple[int, int]]): A dictionary mapping each position in the target string where an actual alignment occurred to the score achieved at that position and the final length of aligned_t.
     """
     dp = {0: {0: 0}}
     backtrack = {0: {0: 0}}
@@ -53,16 +48,16 @@ def positional_alignment(match_reward: 2, mismatch_penalty: -2, indel_penalty: 1
                 max_score = dp[i][j]
                 max_pos = (i, j)
 
-            scores_at_positions[j] = dp[i][j]
-
     i, j = max_pos
     aligned_s, aligned_t = '', ''
+    alignment_length = 0
     while i > 0 and j > 0 and dp[i][j] > 0:
         if backtrack[i][j] == 3:
             aligned_s = s[i - 1] + aligned_s
             aligned_t = t[j - 1] + aligned_t
             i -= 1
             j -= 1
+            alignment_length += 1
         elif backtrack[i][j] == 1:
             aligned_s = s[i - 1] + aligned_s
             aligned_t = '-' + aligned_t
@@ -71,7 +66,23 @@ def positional_alignment(match_reward: 2, mismatch_penalty: -2, indel_penalty: 1
             aligned_s = '-' + aligned_s
             aligned_t = t[j - 1] + aligned_t
             j -= 1
+            alignment_length += 1
         else:
             break
 
+    # Update scores_at_positions with score and final alignment length
+    for pos in range(1, len(t) + 1):
+        if dp[len(s)][pos] > 0:  # Checks if there is a score at the end of s for each position in t
+            scores_at_positions[pos] = (dp[len(s)][pos], alignment_length)
+
     return max_score, aligned_s, aligned_t, scores_at_positions
+
+if __name__ == "__main__":
+    tests = [
+        (3, 3, 1, "AGC", "ATC"),
+        (1, 1, 1, "TAACG", "ACGTG"),
+        (3, 2, 1, "CAGAGATGGCCG", "ACG"),
+        (2, 3, 1, "CTT", "AGCATAAAGCATT")
+    ]
+    for test in tests:
+        print(positional_alignment(*test))
