@@ -3,7 +3,7 @@
 from pysam import FastaFile
 
 
-def read_fasta(file_path: str) -> FastaFile:
+def read_fasta(file_path: str) -> Union[FastaFile, None]:
     """Read sequences from a FASTA file.
 
     Validates the provided file path and ensures it has a .fasta extension before reading. 
