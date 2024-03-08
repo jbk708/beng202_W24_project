@@ -7,7 +7,9 @@ def positional_alignment(match_reward: 2, mismatch_penalty: -2, indel_penalty: 1
     """
     Perform local sequence alignment between two strings using dynamic programming.
 
-    This function computes the local alignment between string s (source) and t (target) based on the given scoring parameters. It returns the highest alignment score, the corresponding local alignment for s and t, and a dictionary containing the scores at each position in the target string where an actual alignment (match/mismatch) occurred.
+    This function computes the local alignment between string s (source) and t (target) based on the given scoring parameters. 
+    It returns the highest alignment score, the corresponding local alignment for s and t, 
+    and a dictionary containing the scores at each position in the target string where an actual alignment (match/mismatch) occurred.
 
     Args:
         match_reward (int): The score to reward when characters match.
