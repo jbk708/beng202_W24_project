@@ -42,6 +42,7 @@ poetry-dynamic-versioning = {extras = ["plugin"], version = "^0.21.1"}
 python-dotenv = "^0.21.0"
 pysam = "^0.22.0"
 click = "^8.1.7"
+tqdm = "^4.66.2"
 
 
 [tool.poetry.group.dev.dependencies]
