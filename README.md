@@ -13,7 +13,6 @@ This package provides tools for Multi-Locus Sequence Typing (MLST) based strain 
 The CLI provides a simple and interactive way to compute gene scores based on local sequence alignment. Here's how to use it:
 
 ### Basic Command
-
 ```sh
 poetry run mlst_aligner score [OPTIONS] READ_FP REFERENCE
 ```
