@@ -25,9 +25,8 @@ def score(read_fp, reference, match, mismatch, indel):
     gene_score = GeneScore(read_fp, reference, match=match, mismatch=mismatch, indel=indel)
     final_score = gene_score.get_t_score()
     click.echo(f"Final Score: {final_score}")
-    
     end_time = time.time()
-    print(f"Completed in {end_time - start_time:.2f} seconds."
+    print(f"Completed in {end_time - start_time:.2f} seconds.")
 
 @click.command()
 @click.argument('original_fasta_fp', type=click.Path(exists=True))
