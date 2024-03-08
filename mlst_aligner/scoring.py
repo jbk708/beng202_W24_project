@@ -1,8 +1,11 @@
 """scoring.py"""
+from tqdm import tqdm
+import time
 from typing import List, Dict
 
 from mlst_aligner.aligner import positional_alignment
 from mlst_aligner.utils import read_fasta, weighted_average
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 def merge_scores(scores_at_positions_list: List[Dict[int, int]]) -> Dict[int, List[int]]:
@@ -40,32 +43,51 @@ class GeneScore:
         self.scoring_parameters = (kwargs.get("match", 2), kwargs.get("mismatch", -2), kwargs.get("indel", -1))
         self.scoring_dict = None
         
-
     def get_scores(self):
         """
         Fetches each read from the FASTA file, performs local sequence alignment against a reference sequence,
-        and merges the scores at each position into a single dictionary.
+        and merges the scores at each position into a single dictionary using multithreading to speed up the process.
 
         This method iterates over each read in the FASTA file specified by the read file path provided during
         object initialization. It performs local sequence alignment of each read against the reference sequence
         using the scoring parameters. The scores at each position from these alignments are then aggregated across 
-        all reads to generate ascoring dictionary for the aligned segments of the reference. The resulting merged 
+        all reads to generate a scoring dictionary for the aligned segments of the reference. The resulting merged 
         scores dictionary combines all scores on the position to which they were aligned.
 
         Attributes:
             scores (Dict[int, List[int]]): A dictionary where each key is a position in the reference sequence,
-                                        and each value is a list of scores for that position from all reads'
-                                        alignments. This dictionary provides a comprehensive overview of how
-                                        each position in the reference sequence aligns with the reads.
+                                            and each value is a list of scores for that position from all reads'
+                                            alignments. This dictionary provides a comprehensive overview of how
+                                            each position in the reference sequence aligns with the reads.
         """
-        score_dicts = []
-        for read_name in self.reads.references:
+        start_time = time.time()  # Start timing
+
+        # Define a function to process each read
+        def process_read(read_name):
             read_sequence = self.reads.fetch(read_name)
-            alignment_score, aligned_read, aligned_reference, scores_at_positions = positional_alignment(
+            _, _, _, scores_at_positions = positional_alignment(
                 *self.scoring_parameters, s=read_sequence, t=self.reference)
-            score_dicts.append((scores_at_positions))
+            return scores_at_positions
+
+        # Initialize an empty list to store the future results
+        score_dicts = []
+
+        # Use ThreadPoolExecutor to parallelize read processing
+        with ThreadPoolExecutor() as executor:
+            # Submit all read processing tasks and get a list of futures
+            futures = {executor.submit(process_read, read_name): read_name for read_name in self.reads.references}
+
+            # Iterate over the futures as they complete and update score_dicts
+            for future in tqdm(as_completed(futures), total=len(futures), desc="Aligning reads"):
+                try:
+                    score_dicts.append(future.result())
+                except Exception as e:
+                    print(f"Read processing failed: {e}")
+
         self.scoring_dict = merge_scores(score_dicts)
+        end_time = time.time()  # End timing
         
+        print(f"Completed in {end_time - start_time:.2f} seconds.")
             
     def get_t_score(self) -> int:
         """
