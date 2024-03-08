@@ -1,5 +1,6 @@
 """utils.py"""
-
+import os
+from typing import List, Tuple, Union
 from pysam import FastaFile
 
 
@@ -21,15 +22,30 @@ def read_fasta(file_path: str) -> Union[FastaFile, None]:
     """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"The file {file_path} does not exist.")
-    if not file_path.lower().endswith('.fasta') or not file_path.lower().endswith('.fa'):
+    if not (file_path.lower().endswith('.fasta') or file_path.lower().endswith('.fa')):
         raise ValueError("File extension must be .fasta or .fa")
 
     sequences_object = FastaFile(file_path)
     return sequences_object
 
-def weighted_average(scores):
-    # Compute the weighted average for each position.
-    pass
+
+def weighted_average(scores: List[Tuple[int, int]]) -> float:
+    """
+    Computes the weighted average for a list of values and their weights.
+
+    Args:
+        scores (List[Tuple[int, int]]): A list of tuples, where each tuple contains a value and its corresponding weight.
+
+    Returns:
+        float: The weighted average of the values.
+    """
+    if not scores:
+        return 0
+
+    total_product_sum = sum(value * weight for value, weight in scores)
+    total_weight_sum = sum(weight for _, weight in scores)
+
+    return total_product_sum / total_weight_sum if total_weight_sum else 0
 
 
 def save_results(results, file_path):
