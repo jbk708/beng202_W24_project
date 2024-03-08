@@ -28,6 +28,31 @@ def read_fasta(file_path: str) -> Union[FastaFile, None]:
     sequences_object = FastaFile(file_path)
     return sequences_object
 
+def fetch_references(file_path: str) -> List[Tuple[str, str]]:
+    """
+    Utilizes the read_fasta function to parse a FASTA file, extracting gene names and sequences.
+    
+    Parameters:
+    - file_path: str, path to the FASTA file.
+    
+    Returns:
+    List[Tuple[str, str]]: A list of tuples, where each tuple contains a gene name and its sequence.
+    """
+    try:
+        fasta_obj = read_fasta(file_path)
+        if fasta_obj is None:
+            return []
+
+        gene_sequences = []
+        for reference in fasta_obj.references:
+            sequence = fasta_obj.fetch(reference)
+            gene_sequences.append((reference, sequence))
+        
+        return gene_sequences
+
+    except (FileNotFoundError, ValueError) as e:
+        print(f"Error reading FASTA file: {e}")
+        return []
 
 def weighted_average(scores: List[Tuple[int, int]]) -> float:
     """
