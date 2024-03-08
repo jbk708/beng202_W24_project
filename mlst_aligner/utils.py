@@ -72,7 +72,4 @@ def subset_fasta(original_fasta: str, subset_count: 1000, output_fasta: str):
 
     print(f"Subset FASTA file saved to {output_fasta} with {subset_count} reads.")
 
-def save_results(results, file_path):
-    # Function to save the computed results to a file.
-    pass
 
