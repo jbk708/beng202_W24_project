@@ -1,5 +1,5 @@
-"""mlst.py"""
-from typing import List
+"""scoring.py"""
+from typing import List, Dict
 
 from mlst_aligner.aligner import positional_alignment
 from mlst_aligner.utils import read_fasta, weighted_average
@@ -38,7 +38,8 @@ class GeneScore:
         self.reads = read_fasta(read_fp)
         self.reference = reference
         self.scoring_parameters = (kwargs.get("match", 2), kwargs.get("mismatch", -2), kwargs.get("indel", -1))
-        self.scores = None
+        self.scoring_dict = None
+        
 
     def get_scores(self):
         """
@@ -63,4 +64,28 @@ class GeneScore:
             alignment_score, aligned_read, aligned_reference, scores_at_positions = positional_alignment(
                 *self.scoring_parameters, s=read_sequence, t=self.reference)
             score_dicts.append((scores_at_positions))
-        self.scores = merge_scores(score_dicts)
+        self.scoring_dict = merge_scores(score_dicts)
+        
+            
+    def get_t_score(self) -> int:
+        """
+        Calculates the total score from the aggregated scoring dictionary.
+
+        This method first ensures that scores are fetched and aggregated by calling `get_scores()`.
+        It then computes the total score by summing all the scores for every position in the reference
+        sequence from all reads' alignments. The total score represents an overall measure of alignment
+        quality or coverage across the entire set of reads and the reference sequence.
+
+        Returns:
+            int: The total score representing the sum of all alignment scores across all positions and reads.
+        """
+        try:
+            self.get_scores()
+        except Exception as e:
+            print(f"Error encountered in get_scores: {e}")
+            return 0 
+        final_score = 0
+        for value in self.scoring_dict.values():
+            final_score += sum(value)
+            
+        return final_score
