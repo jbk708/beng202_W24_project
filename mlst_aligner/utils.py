@@ -27,6 +27,10 @@ def read_fasta(file_path: str) -> Union[FastaFile, None]:
     sequences_object = FastaFile(file_path)
     return sequences_object
 
+def weighted_average(scores):
+    # Compute the weighted average for each position.
+    pass
+
 
 def save_results(results, file_path):
     # Function to save the computed results to a file.
