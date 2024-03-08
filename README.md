@@ -12,6 +12,12 @@
 
 ## Code Formatting and Linting Standards
 
+For code testing, run from the root folder:
+
+```sh
+poetry run pytest
+```
+
 For code formatting, simply run [yapf](https://github.com/google/yapf) from the root folder:
 
 ```sh
