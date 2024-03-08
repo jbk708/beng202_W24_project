@@ -1,6 +1,22 @@
 # Positional Aligner for MLST Based Strain Classification
 This package provides tools for Multi-Locus Sequence Typing (MLST) based strain classification using positional alignment, an ~~abomination~~ riff on local alignment. It includes functionalities for aligning genetic sequences to reference strains and computing gene scores, facilitating the identification and classification of bacterial strains.
 
+## Requirements
+
+Before installing and running this package, ensure you have the following installed:
+
+- [Python](https://www.python.org/) 3.10 or higher
+- [Poetry](https://python-poetry.org/) for dependency management
+
+This package also depends on several third-party libraries, including:
+
+- Click for creating the CLI
+- PySAM for handling FASTA files
+- pytest, yapf, and pylint for testing, formatting, and linting
+
+All dependencies will be installed automatically when using Poetry to install the package.
+
+
 ## Installation:
 
 1. Clone git repo into directory of choice
