@@ -18,7 +18,6 @@ def score(read_fp, reference, match, mismatch, indel):
     Compute and print the gene scores based on alignments.
     """
     gene_score = GeneScore(read_fp, reference, match=match, mismatch=mismatch, indel=indel)
-    gene_score.get_scores()
     final_score = gene_score.get_t_score()
     click.echo(f"Final Score: {final_score}")
 
