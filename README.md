@@ -10,7 +10,7 @@
 ## Modules
 
 
-## Code Formatting and Linting Standards
+## Code Testing, Formatting, and Linting Standards
 
 For code testing, run from the root folder:
 
