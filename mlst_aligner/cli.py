@@ -1,6 +1,7 @@
 import click
 from mlst_aligner.scoring import GeneScore
 from mlst_aligner.utils import subset_fasta
+from mlst_aligner.mlst import ScoreMLST
 
 
 @click.group()
@@ -38,9 +39,23 @@ def subset(original_fasta_fp, subset_count, output_fasta_fp):
     """
     subset_fasta(original_fasta=original_fasta_fp, subset_count=subset_count, output_fasta=output_fasta_fp)
 
-
+@click.command()
+@click.argument('reads_fp', type=click.Path(exists=True))
+@click.argument('references_fp', type=click.Path(exists=True))
+@click.option('--match', default=2, help='Match score.')
+@click.option('--mismatch', default=-2, help='Mismatch penalty.')
+@click.option('--indel', default=-1, help='Indel penalty.')
+def score_mlst(reads_fp, references_fp, match, mismatch, indel):
+    """
+    Compute and print the MLST scores for multiple genes based on alignments.
+    """
+    mlst_scorer = ScoreMLST(reads_fp=reads_fp, references_fp=references_fp, match=match, mismatch=mismatch, indel=indel)
+    gene_scores = mlst_scorer.score_mlst()
+    for gene_name, gene_score in gene_scores:
+        click.echo(f"Gene: {gene_name}, Score: {gene_score}")
+        
 cli.add_command(score)
 cli.add_command(subset)
-
+cli.add_command(score_mlst)
 if __name__ == '__main__':
     cli()
